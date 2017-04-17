@@ -27,10 +27,10 @@ function randomIndex(imageArray) {
 picks 3 images and returns them, no duplicates. ignores images from the previous round.
 **/
 function randomImages(remainingImages, previousImages) {
-  console.log('starting remainingImages len', remainingImages.length);
   var chosenIndex;
   var chosenImages = [];
-  for (var i = 0; i < 3; i++) {
+  var numToChoose = 3;
+  for (var i = 0; i < numToChoose; i++) {
     chosenIndex = randomIndex(remainingImages);
     chosenImages.push(remainingImages[chosenIndex]);
     remainingImages.splice(chosenIndex, 1); // removes chosen item
@@ -38,11 +38,34 @@ function randomImages(remainingImages, previousImages) {
   for (var j = 0; j < previousImages.length; j++) {
     remainingImages.push(previousImages[j]); // add back in the previous images
   }
-  // remainingImages = remainingImages.concat(previousImages);
-  console.log('after readding, remainingImages len',remainingImages.length);
-  console.log('after readding, remainingImages',remainingImages);
-  console.log('chosen imgs',chosenImages);
   return chosenImages;
+}
+
+function renderImages(chosenImages) {
+  var div = document.createElement('div');
+  var image;
+  for (var i = 0; i < chosenImages.length; i++) {
+    image = document.createElement('img');
+    image.src = chosenImages[i].imagePath;
+    div.appendChild(image);
+  }
+  return div;
+}
+
+/**
+checks that no images have been lost in the randomization process
+**/
+function testImageArrays(originalImgs, remainingImgs, previousImgs) {
+  var allImgs = remainingImgs.concat(previousImgs);
+  for (var i = 0; i < allImgs.length; i++) {
+    allImgs[i] = allImgs[i].imageId;
+  }
+  allImgs.sort();
+  for (i = 0; i < allImgs.length; i++) {
+    if (allImgs[i] != originalImgs[i]) {
+      console.log('ERROR!');
+    }
+  }
 }
 
 /**
@@ -92,12 +115,22 @@ function main() {
   // 1
   new FocusImage('closed-top wine glass', 'img/wine-glass.jpg', 'wine-glass-img', allImages);
 
-  var previousImages = randomImages(allImages, []);
-  console.log('round 1');
-  previousImages = randomImages(allImages, previousImages);
-  console.log('round 2');
-  previousImages = randomImages(allImages, previousImages);
-  console.log('round 3');
+  var originalImages = allImages.slice(); // copy for testing
+  for (var i = 0; i < originalImages.length; i++) {
+    originalImages[i] = originalImages[i].imageId;
+  }
+  originalImages.sort();
+
+  var previousImages = [];
+  var numRounds = 25;
+  var imageBox = document.getElementById('app');
+  for (var round = 0; round < numRounds; round++) {
+    console.log('round', round);
+    previousImages = randomImages(allImages, previousImages);
+    imageBox.appendChild(renderImages(previousImages));
+    testImageArrays(originalImages,allImages,previousImages);
+  }
+
 }
 
 main();
