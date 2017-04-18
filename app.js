@@ -1,58 +1,58 @@
 'use stict';
 
 // CREATE AN ARRAY OF ALL THE POSSIBLE IMAGES
-var allImages = [];
+var allImages = [
 // 0
-new FocusImage('R2D2 bag', 'img/bag.jpg', 'bag-img', allImages);
+  new FocusImage('R2D2 bag', 'img/bag.jpg', 'bag-img'),
 // 1
-new FocusImage('banana slicer', 'img/banana.jpg', 'banana-img', allImages);
+  new FocusImage('banana slicer', 'img/banana.jpg', 'banana-img'),
 // 2
-new FocusImage('bathroom tablet holder', 'img/bathroom.jpg', 'bathroom-img', allImages);
+  new FocusImage('bathroom tablet holder', 'img/bathroom.jpg', 'bathroom-img'),
 // 3
-new FocusImage('toeless boots', 'img/boots.jpg', 'boots-img', allImages);
+  new FocusImage('toeless boots', 'img/boots.jpg', 'boots-img'),
 // 4
-new FocusImage('all-in-one breakfast machine', 'img/breakfast.jpg', 'breakfast-img', allImages);
+  new FocusImage('all-in-one breakfast machine', 'img/breakfast.jpg', 'breakfast-img'),
 // 5
-new FocusImage('meatball bubblegum', 'img/bubblegum.jpg', 'bubblegum-img', allImages);
+  new FocusImage('meatball bubblegum', 'img/bubblegum.jpg', 'bubblegum-img'),
 // 6
-new FocusImage('inverted chair', 'img/chair.jpg', 'chair-img', allImages);
+  new FocusImage('inverted chair', 'img/chair.jpg', 'chair-img'),
 // 7
-new FocusImage('chthlhu action figure', 'img/cthulhu.jpg', 'cthulhu-img', allImages);
+  new FocusImage('chthlhu action figure', 'img/cthulhu.jpg', 'cthulhu-img'),
 // 8
-new FocusImage('dog duck beak', 'img/dog-duck.jpg', 'dog-duck-img', allImages);
+  new FocusImage('dog duck beak', 'img/dog-duck.jpg', 'dog-duck-img'),
 // 9
-new FocusImage('dragon meat', 'img/dragon.jpg', 'dragon-img', allImages);
+  new FocusImage('dragon meat', 'img/dragon.jpg', 'dragon-img'),
 // 10
-new FocusImage('utensil pen caps', 'img/pen.jpg', 'pen-img', allImages);
+  new FocusImage('utensil pen caps', 'img/pen.jpg', 'pen-img'),
 // 11
-new FocusImage('pet footie sweepers', 'img/pet-sweep.jpg', 'pet-sweep-img', allImages);
+  new FocusImage('pet footie sweepers', 'img/pet-sweep.jpg', 'pet-sweep-img'),
 // 12
-new FocusImage('pizza scissors', 'img/scissors.jpg', 'scissors-img', allImages);
+  new FocusImage('pizza scissors', 'img/scissors.jpg', 'scissors-img'),
 // 13
-new FocusImage('shark sleeping bag', 'img/shark.jpg', 'shark-img', allImages);
+  new FocusImage('shark sleeping bag', 'img/shark.jpg', 'shark-img'),
 // 14
-new FocusImage('baby onesie sweeper', 'img/sweep.png', 'sweep-img', allImages);
+  new FocusImage('baby onesie sweeper', 'img/sweep.png', 'sweep-img'),
 // 15
-new FocusImage('tauntaun sleeping bag', 'img/tauntaun.jpg', 'tauntaun-img', allImages);
+  new FocusImage('tauntaun sleeping bag', 'img/tauntaun.jpg', 'tauntaun-img'),
 // 16
-new FocusImage('unicorn meat', 'img/unicorn.jpg', 'unicorn-img', allImages);
+  new FocusImage('unicorn meat', 'img/unicorn.jpg', 'unicorn-img'),
 // 17
-new FocusImage('tentacle usb', 'img/usb.gif', 'usb-img', allImages);
+  new FocusImage('tentacle usb', 'img/usb.gif', 'usb-img'),
 // 18
-new FocusImage('self-watering can', 'img/water-can.jpg', 'water-can-img', allImages);
-// 1
-new FocusImage('closed-top wine glass', 'img/wine-glass.jpg', 'wine-glass-img', allImages);
+  new FocusImage('self-watering can', 'img/water-can.jpg', 'water-can-img'),
+// 19
+  new FocusImage('closed-top wine glass', 'img/wine-glass.jpg', 'wine-glass-img'),
+];
 
 /**
 creates an object for a image with the name, path, and id. adds to given array.
 **/
-function FocusImage(imageTitle, imagePath, imageId, imageArray) {
+function FocusImage(imageTitle, imagePath, imageId) {
   this.imageTitle = imageTitle;
   this.imagePath = imagePath;
   this.imageId = imageId;
   this.timesClick = 0;
   this.timesShow = 0;
-  imageArray.push(this);
 }
 
 /**
@@ -84,8 +84,8 @@ function randomImages(remainingImages, previousImages) {
 sticks the chosen images in a div to print. adds event listeners to each.
 **/
 function renderImages(chosenImages) {
-  var div = document.createElement('div');
-  div.id = 'app-images';
+  var imageBox = document.createElement('div');
+  imageBox.id = 'app-images';
   var image;
   var printImage;
   for (var i = 0; i < chosenImages.length; i++) {
@@ -93,11 +93,12 @@ function renderImages(chosenImages) {
     image = document.createElement('img');
     image.src = printImage.imagePath; //display the image
     image.id = printImage.imageId;
+    image.alt = printImage.imageTitle;
     printImage.timesShow++; //increment times shown
     image.addEventListener('click', handleImageClick);
-    div.appendChild(image);
+    imageBox.appendChild(image);
   }
-  return div;
+  return imageBox;
 }
 
 /**
@@ -116,12 +117,12 @@ function handleImageClick(e) {
   imageObj.timesClick++;
   if (currentRound != maxRound) {
     previousImages = randomImages(remainingImages, previousImages);
-    imageBox.removeChild(document.getElementById('app-images'));
-    imageBox.appendChild(renderImages(previousImages));
+    appBox.removeChild(document.getElementById('app-images'));
+    appBox.appendChild(renderImages(previousImages));
   } else {
     console.log('DONE!');
     removeAllListeners();
-    imageBox.appendChild(renderStatistics());
+    appBox.appendChild(renderStatistics());
   }
   currentRound++;
 }
@@ -159,7 +160,7 @@ var remainingImages = allImages.slice(); // copy to leave original alone
 var previousImages = [];
 var maxRound = 25;
 var currentRound = 1;
-var imageBox = document.getElementById('app');
+var appBox = document.getElementById('app');
 
 previousImages = randomImages(remainingImages, previousImages);
-imageBox.appendChild(renderImages(previousImages));
+appBox.appendChild(renderImages(previousImages));
