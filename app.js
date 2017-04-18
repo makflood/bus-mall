@@ -94,7 +94,6 @@ function renderImages(chosenImages) {
     image.src = printImage.imagePath; //display the image
     image.id = printImage.imageId;
     printImage.timesShow++; //increment times shown
-    console.log(printImage);
     image.addEventListener('click', handleImageClick);
     div.appendChild(image);
   }
@@ -102,50 +101,39 @@ function renderImages(chosenImages) {
 }
 
 function handleImageClick(e) {
-  var imageId = e.target.id;
-  var imageObj;
-  for (var i = 0; i < allImages.length; i++) {
-    if (imageId === allImages[i].imageId) {
-      imageObj = allImages[i];
-      i = allImages.length;
+  if (currentRound != maxRound) {
+    console.log(currentRound);
+    var imageId = e.target.id;
+    var imageObj;
+    for (var i = 0; i < allImages.length; i++) {
+      if (imageId === allImages[i].imageId) {
+        imageObj = allImages[i];
+        i = allImages.length;
+      }
     }
+    imageObj.timesClick++;
+    previousImages = randomImages(remainingImages, previousImages);
+    imageBox.removeChild(document.getElementById('app-images'));
+    imageBox.appendChild(renderImages(previousImages));
+  } else {
+    console.log('DONE!');
+    e.target.removeEventListener('click', handleImageClick);
+    //remove the listener
+    //display the stats
   }
-  imageObj.timesClick++;
-}
-
-/**
-checks that no images have been lost in the randomization process
-**/
-function testImageArrays(originalImgs, remainingImgs, previousImgs) {
-  var allImgs = remainingImgs.concat(previousImgs);
-  for (var i = 0; i < allImgs.length; i++) {
-    allImgs[i] = allImgs[i].imageId;
-  }
-  allImgs.sort();
-  for (i = 0; i < allImgs.length; i++) {
-    if (allImgs[i] != originalImgs[i]) {
-      console.log('ERROR!');
-    }
-  }
+  currentRound++;
 }
 
 /**
 MAIN APPLICATION
 **/
-function main() {
 
-  var remainingImages = allImages.slice(); // copy to leave original alone
+var remainingImages = allImages.slice(); // copy to leave original alone
 
-  var previousImages = [];
-  var numRounds = 25;
-  var imageBox = document.getElementById('app');
+var previousImages = [];
+var maxRound = 5;
+var currentRound = 1;
+var imageBox = document.getElementById('app');
 
-  previousImages = randomImages(remainingImages, previousImages);
-  // if (round != 0) {
-  //   imageBox.removeChild(document.getElementById('app-images'));
-  // }
-  imageBox.appendChild(renderImages(previousImages));
-
-}
-
-main();
+previousImages = randomImages(remainingImages, previousImages);
+imageBox.appendChild(renderImages(previousImages));
