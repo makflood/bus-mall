@@ -100,28 +100,54 @@ function renderImages(chosenImages) {
   return div;
 }
 
+/**
+handles a click on one of the set of images. gives another set if more rounds required, removes the listener if done.
+**/
 function handleImageClick(e) {
-  if (currentRound != maxRound) {
-    console.log(currentRound);
-    var imageId = e.target.id;
-    var imageObj;
-    for (var i = 0; i < allImages.length; i++) {
-      if (imageId === allImages[i].imageId) {
-        imageObj = allImages[i];
-        i = allImages.length;
-      }
+  console.log(currentRound);
+  var imageId = e.target.id;
+  var imageObj;
+  for (var i = 0; i < allImages.length; i++) {
+    if (imageId === allImages[i].imageId) {
+      imageObj = allImages[i];
+      i = allImages.length;
     }
-    imageObj.timesClick++;
+  }
+  imageObj.timesClick++;
+  if (currentRound != maxRound) {
     previousImages = randomImages(remainingImages, previousImages);
     imageBox.removeChild(document.getElementById('app-images'));
     imageBox.appendChild(renderImages(previousImages));
   } else {
     console.log('DONE!');
-    e.target.removeEventListener('click', handleImageClick);
-    //remove the listener
-    //display the stats
+    removeAllListeners();
+    imageBox.appendChild(renderStatistics());
   }
   currentRound++;
+}
+
+/**
+removes the click event listeners from all the images
+**/
+function removeAllListeners() {
+  var imageElements = document.querySelectorAll('#app-images img');
+  for (var i = 0; i < imageElements.length; i++) {
+    imageElements[i].removeEventListener('click', handleImageClick);
+  }
+}
+
+/**
+renders the times clicked for every image in a list
+**/
+function renderStatistics() {
+  var statsList = document.createElement('ul');
+  var imageStats;
+  for (var i = 0; i < allImages.length; i++) {
+    imageStats = document.createElement('li');
+    imageStats.textContent = allImages[i].timesClick + ' votes for the ' + allImages[i].imageTitle;
+    statsList.appendChild(imageStats);
+  }
+  return statsList;
 }
 
 /**
@@ -131,7 +157,7 @@ MAIN APPLICATION
 var remainingImages = allImages.slice(); // copy to leave original alone
 
 var previousImages = [];
-var maxRound = 5;
+var maxRound = 25;
 var currentRound = 1;
 var imageBox = document.getElementById('app');
 
