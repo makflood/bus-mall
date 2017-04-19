@@ -142,8 +142,8 @@ renders the times clicked for every image in a chart printed in a canvas element
 **/
 function renderStatistics() {
   var canvas = document.createElement('canvas');
-  // canvas.width = '500';
-  // canvas.height = '100';
+  canvas.width = '500';
+  canvas.height = '250';
   canvas.style['border'] = '1px blue solid';
   appBox.appendChild(canvas);
   var ctx = canvas.getContext('2d');
@@ -171,8 +171,8 @@ function renderStatistics() {
       }
     ],
   };
-  var imageStats = new Chart(ctx, {
-    type: 'bar',
+  new Chart(ctx, {
+    type: 'horizontalBar',
     data: data,
   });
 }
