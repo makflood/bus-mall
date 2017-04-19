@@ -63,7 +63,7 @@ FocusImage.prototype.getClickPercentage = function() {
   } else {
     return -1;
   }
-}
+};
 
 /**
 chooses a random index from an array
@@ -152,12 +152,20 @@ function renderAllStatistics() {
   Chart.defaults.global.defaultFontColor = '#fff';
   Chart.defaults.global.defaultFontFamily = 'Gill Sans';
 
-  appBox.appendChild(document.createElement('br'));
+  var heading = document.createElement('h2');
+  heading.textContent = 'Top 5 Products';
+  heading.className = 'chart-heading';
+  appBox.appendChild(heading);
 
-  var sortedImages = imagesSort(allImages);
-  for (var i = 0; i < 5; i++) {
-    renderPercentagePie(sortedImages[i]);
+  var sortedImages = sortImages(allImages);
+  for (var pie = 0; pie < 5; pie++) {
+    renderPercentagePie(sortedImages[pie]);
   }
+
+  heading = document.createElement('h2');
+  heading.textContent = 'All Products';
+  heading.className = 'chart-heading';
+  appBox.appendChild(heading);
 
   var barCanvas = document.createElement('canvas');
   barCanvas.width = '500';
@@ -217,14 +225,16 @@ function renderPercentagePie(image) {
   appBox.appendChild(pieBox);
   var ctx = pieCanvas.getContext('2d');
 
+  var clickPercent = Math.round(image.getClickPercentage() * 100);
+
   var pieData = {
-    labels: ['Times Clicked', 'Times Not Clicked'],
+    labels: ['Clicked %', 'Not Clicked %'],
     datasets: [
       {
         // label: 'Stuff',
         backgroundColor: ['#fff', 'transparent'],
         borderWidth: 0,
-        data: [image.timesClick, image.timesShow - image.timesClick],
+        data: [clickPercent, 100 - clickPercent],
       },
     ],
   };
@@ -249,7 +259,7 @@ function renderPercentagePie(image) {
 /**
 sorts the image array in decending order of percentage of times clicked
 **/
-function imagesSort(imageList) {
+function sortImages(imageList) {
   var sortedImages = imageList.slice();
   var currentImage;
   var j;
