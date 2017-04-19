@@ -143,34 +143,41 @@ renders the times clicked for every image in a chart printed in a canvas element
 function renderStatistics() {
   var canvas = document.createElement('canvas');
   canvas.width = '500';
-  canvas.height = '250';
-  canvas.style['border'] = '1px blue solid';
+  canvas.height = '300';
+
   appBox.appendChild(canvas);
   var ctx = canvas.getContext('2d');
 
   var imageLabels = [];
   var imageDataClick = [];
   var imageDataShow = [];
+  var imageDataClickColors = [];
+  var imageDataShowColors = [];
+  var hue;
   for (var i = 0; i < allImages.length; i++) {
     imageLabels.push(allImages[i].imageTitle);
     imageDataClick.push(allImages[i].timesClick);
     imageDataShow.push(allImages[i].timesShow);
+    hue = 360 / allImages.length * i;
+    imageDataClickColors.push('hsl('+ hue +', 100%, 50%)');
+    imageDataShowColors.push('hsl('+ hue +', 30%, 50%)');
   }
   var data = {
     labels: imageLabels,
     datasets: [
       {
         label: 'Times Clicked',
-        backgroundColor: '#3cd859',
+        backgroundColor: imageDataClickColors,
         data: imageDataClick,
       },
       {
         label: 'Times Shown',
-        backgroundColor: '#f7d61b',
+        backgroundColor: imageDataShowColors,
         data: imageDataShow,
       }
     ],
   };
+  Chart.defaults.global.defaultFontColor = '#fff';
   new Chart(ctx, {
     type: 'horizontalBar',
     data: data,
