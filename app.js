@@ -1,58 +1,67 @@
 'use stict';
 
 // CREATE AN ARRAY OF ALL THE POSSIBLE IMAGES
-var allImages = [
+var allImages = [];
 // 0
-  new FocusImage('R2D2 bag', 'img/bag.jpg', 'bag-img'),
+new FocusImage('R2D2 bag', 'img/bag.jpg');
 // 1
-  new FocusImage('banana slicer', 'img/banana.jpg', 'banana-img'),
+new FocusImage('banana slicer', 'img/banana.jpg');
 // 2
-  new FocusImage('bathroom tablet holder', 'img/bathroom.jpg', 'bathroom-img'),
+new FocusImage('bathroom tablet holder', 'img/bathroom.jpg');
 // 3
-  new FocusImage('toeless boots', 'img/boots.jpg', 'boots-img'),
+new FocusImage('toeless boots', 'img/boots.jpg', '3');
 // 4
-  new FocusImage('all-in-one breakfast machine', 'img/breakfast.jpg', 'breakfast-img'),
+new FocusImage('all-in-one breakfast machine', 'img/breakfast.jpg');
 // 5
-  new FocusImage('meatball bubblegum', 'img/bubblegum.jpg', 'bubblegum-img'),
+new FocusImage('meatball bubblegum', 'img/bubblegum.jpg');
 // 6
-  new FocusImage('inverted chair', 'img/chair.jpg', 'chair-img'),
+new FocusImage('inverted chair', 'img/chair.jpg');
 // 7
-  new FocusImage('chthlhu action figure', 'img/cthulhu.jpg', 'cthulhu-img'),
+new FocusImage('chthlhu action figure', 'img/cthulhu.jpg');
 // 8
-  new FocusImage('dog duck beak', 'img/dog-duck.jpg', 'dog-duck-img'),
+new FocusImage('dog duck beak', 'img/dog-duck.jpg');
 // 9
-  new FocusImage('dragon meat', 'img/dragon.jpg', 'dragon-img'),
+new FocusImage('dragon meat', 'img/dragon.jpg');
 // 10
-  new FocusImage('utensil pen caps', 'img/pen.jpg', 'pen-img'),
+new FocusImage('utensil pen caps', 'img/pen.jpg');
 // 11
-  new FocusImage('pet footie sweepers', 'img/pet-sweep.jpg', 'pet-sweep-img'),
+new FocusImage('pet footie sweepers', 'img/pet-sweep.jpg');
 // 12
-  new FocusImage('pizza scissors', 'img/scissors.jpg', 'scissors-img'),
+new FocusImage('pizza scissors', 'img/scissors.jpg');
 // 13
-  new FocusImage('shark sleeping bag', 'img/shark.jpg', 'shark-img'),
+new FocusImage('shark sleeping bag', 'img/shark.jpg');
 // 14
-  new FocusImage('baby onesie sweeper', 'img/sweep.png', 'sweep-img'),
+new FocusImage('baby onesie sweeper', 'img/sweep.png');
 // 15
-  new FocusImage('tauntaun sleeping bag', 'img/tauntaun.jpg', 'tauntaun-img'),
+new FocusImage('tauntaun sleeping bag', 'img/tauntaun.jpg');
 // 16
-  new FocusImage('unicorn meat', 'img/unicorn.jpg', 'unicorn-img'),
+new FocusImage('unicorn meat', 'img/unicorn.jpg');
 // 17
-  new FocusImage('tentacle usb', 'img/usb.gif', 'usb-img'),
+new FocusImage('tentacle usb', 'img/usb.gif');
 // 18
-  new FocusImage('self-watering can', 'img/water-can.jpg', 'water-can-img'),
+new FocusImage('self-watering can', 'img/water-can.jpg');
 // 19
-  new FocusImage('closed-top wine glass', 'img/wine-glass.jpg', 'wine-glass-img'),
-];
+new FocusImage('closed-top wine glass', 'img/wine-glass.jpg');
+
+
+var remainingImages = allImages.slice(); // copy to leave original alone
+
+var previousImages = [];
+var maxRound = 25;
+var currentRound = 1;
+var numToChoose = 3;
+var appBox = document.getElementById('app');
 
 /**
 creates an object for an image with the name, path, and id. adds to given array.
 **/
-function FocusImage(imageTitle, imagePath, imageId) {
+function FocusImage(imageTitle, imagePath) {
   this.imageTitle = imageTitle;
   this.imagePath = imagePath;
-  this.imageId = imageId;
+  this.imageIndex = allImages.length;
   this.timesClick = 0;
   this.timesShow = 0;
+  allImages.push(this);
 }
 /**
 gets the percentage of times an image was clicked as a decimal. -1 if image was never shown
@@ -75,10 +84,9 @@ function randomIndex(imageArray) {
 /**
 picks 3 images and returns them, no duplicates. ignores images from the previous round.
 **/
-function randomImages(remainingImages, previousImages) {
+function getRandomImages(remainingImages, previousImages) {
   var chosenIndex;
   var chosenImages = [];
-  var numToChoose = 3;
   for (var i = 0; i < numToChoose; i++) {
     chosenIndex = randomIndex(remainingImages);
     chosenImages.push(remainingImages[chosenIndex]);
@@ -91,21 +99,35 @@ function randomImages(remainingImages, previousImages) {
 }
 
 /**
+creates the div to put the images in and the image elements themselves
+**/
+function attachImageBoxes() {
+  var imageBox = document.createElement('div');
+  imageBox.id = 'app-images';
+  var imageElement;
+  for (var i = 0; i < numToChoose; i++) {
+    imageElement = document.createElement('img');
+    imageElement.addEventListener('click', handleImageClick);
+    imageBox.appendChild(imageElement);
+  }
+  return imageBox;
+}
+
+/**
 sticks the chosen images in a div to print. adds event listeners to each.
 **/
 function renderImages(chosenImages) {
-  var imageBox = document.createElement('div');
-  imageBox.id = 'app-images';
+  var imageBox = document.getElementById('app-images');
+  var imageElements = document.querySelectorAll('#app-images img');
   var image;
   var printImage;
   for (var i = 0; i < chosenImages.length; i++) {
     printImage = chosenImages[i];
-    image = document.createElement('img');
+    image = imageElements[i];
     image.src = printImage.imagePath; //display the image
-    image.id = printImage.imageId;
+    image.id = printImage.imageIndex;
     image.alt = printImage.imageTitle;
     printImage.timesShow++; //increment times shown
-    image.addEventListener('click', handleImageClick);
     imageBox.appendChild(image);
   }
   return imageBox;
@@ -115,18 +137,11 @@ function renderImages(chosenImages) {
 handles a click on one of the set of images. gives another set if more rounds required, removes the listener if done.
 **/
 function handleImageClick(e) {
-  var imageId = e.target.id;
-  var imageObj;
-  for (var i = 0; i < allImages.length; i++) {
-    if (imageId === allImages[i].imageId) {
-      imageObj = allImages[i];
-      i = allImages.length;
-    }
-  }
+  var imageIndex = e.target.id;
+  var imageObj = allImages[imageIndex];
   imageObj.timesClick++;
   if (currentRound < maxRound) {
-    previousImages = randomImages(remainingImages, previousImages);
-    appBox.removeChild(document.getElementById('app-images'));
+    previousImages = getRandomImages(remainingImages, previousImages);
     appBox.appendChild(renderImages(previousImages));
   } else {
     removeAllListeners();
@@ -225,7 +240,7 @@ function renderPercentagePie(image) {
   appBox.appendChild(pieBox);
   var ctx = pieCanvas.getContext('2d');
 
-  var clickPercent = Math.round(image.getClickPercentage() * 100);
+  var clickPercent = (image.getClickPercentage() * 100).toFixed(2);
 
   var pieData = {
     labels: ['Clicked %', 'Not Clicked %'],
@@ -277,13 +292,7 @@ function sortImages(imageList) {
 /**
 MAIN APPLICATION
 **/
+appBox.appendChild(attachImageBoxes());
 
-var remainingImages = allImages.slice(); // copy to leave original alone
-
-var previousImages = [];
-var maxRound = 25;
-var currentRound = 1;
-var appBox = document.getElementById('app');
-
-previousImages = randomImages(remainingImages, previousImages);
+previousImages = getRandomImages(remainingImages, previousImages);
 appBox.appendChild(renderImages(previousImages));
