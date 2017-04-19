@@ -54,6 +54,16 @@ function FocusImage(imageTitle, imagePath, imageId) {
   this.timesClick = 0;
   this.timesShow = 0;
 }
+/**
+gets the percentage of times an image was clicked as a decimal. -1 if image was never shown
+**/
+FocusImage.prototype.getClickPercentage = function() {
+  if (this.timesShow) {
+    return this.timesClick/this.timesShow;
+  } else {
+    return -1;
+  }
+}
 
 /**
 chooses a random index from an array
@@ -115,7 +125,7 @@ function handleImageClick(e) {
     }
   }
   imageObj.timesClick++;
-  if (currentRound != maxRound) {
+  if (currentRound < maxRound) {
     previousImages = randomImages(remainingImages, previousImages);
     appBox.removeChild(document.getElementById('app-images'));
     appBox.appendChild(renderImages(previousImages));
@@ -148,17 +158,18 @@ function renderStatistics() {
   appBox.appendChild(canvas);
   var ctx = canvas.getContext('2d');
 
+  var sortedImages = imagesSort(allImages);
   var imageLabels = [];
   var imageDataClick = [];
   var imageDataShow = [];
   var imageDataClickColors = [];
   var imageDataShowColors = [];
   var hue;
-  for (var i = 0; i < allImages.length; i++) {
-    imageLabels.push(allImages[i].imageTitle);
-    imageDataClick.push(allImages[i].timesClick);
-    imageDataShow.push(allImages[i].timesShow);
-    hue = 360 / allImages.length * i;
+  for (var i = 0; i < sortedImages.length; i++) {
+    imageLabels.push(sortedImages[i].imageTitle);
+    imageDataClick.push(sortedImages[i].timesClick);
+    imageDataShow.push(sortedImages[i].timesShow);
+    hue = 360 / sortedImages.length * i;
     imageDataClickColors.push('hsl('+ hue +', 100%, 50%)');
     imageDataShowColors.push('hsl('+ hue +', 30%, 50%)');
   }
@@ -182,6 +193,24 @@ function renderStatistics() {
     type: 'horizontalBar',
     data: data,
   });
+}
+
+/**
+sorts the image array in decending order of percentage of times clicked
+**/
+function imagesSort(imageList) {
+  var sortedImages = imageList.slice();
+  var currentImage;
+  var j;
+  for (var i = 1; i < sortedImages.length; i++) {
+    j = i;
+    while (j > 0 && sortedImages[j - 1].getClickPercentage() < sortedImages[j].getClickPercentage()) {
+      currentImage = sortedImages.splice(j, 1);
+      sortedImages.splice(j - 1, 0, currentImage[0]);
+      j--;
+    }
+  }
+  return sortedImages;
 }
 
 /**
