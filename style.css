@@ -39,7 +39,15 @@ img {
 }
 
 canvas {
-  background: #444;
   border-radius: 3px;
   padding: 10px;
+}
+
+#all-data-chart {
+  background: #444;
+}
+
+.percentage-pie {
+  display: inline-block;
+  width: 20%;
 }

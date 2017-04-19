@@ -45,7 +45,7 @@ var allImages = [
 ];
 
 /**
-creates an object for a image with the name, path, and id. adds to given array.
+creates an object for an image with the name, path, and id. adds to given array.
 **/
 function FocusImage(imageTitle, imagePath, imageId) {
   this.imageTitle = imageTitle;
@@ -115,7 +115,6 @@ function renderImages(chosenImages) {
 handles a click on one of the set of images. gives another set if more rounds required, removes the listener if done.
 **/
 function handleImageClick(e) {
-  console.log(currentRound);
   var imageId = e.target.id;
   var imageObj;
   for (var i = 0; i < allImages.length; i++) {
@@ -130,9 +129,8 @@ function handleImageClick(e) {
     appBox.removeChild(document.getElementById('app-images'));
     appBox.appendChild(renderImages(previousImages));
   } else {
-    console.log('DONE!');
     removeAllListeners();
-    renderStatistics();
+    renderAllStatistics();
   }
   currentRound++;
 }
@@ -150,15 +148,25 @@ function removeAllListeners() {
 /**
 renders the times clicked for every image in a chart printed in a canvas element and printed to the page
 **/
-function renderStatistics() {
-  var canvas = document.createElement('canvas');
-  canvas.width = '500';
-  canvas.height = '300';
+function renderAllStatistics() {
+  Chart.defaults.global.defaultFontColor = '#fff';
+  Chart.defaults.global.defaultFontFamily = 'Gill Sans';
 
-  appBox.appendChild(canvas);
-  var ctx = canvas.getContext('2d');
+  appBox.appendChild(document.createElement('br'));
 
   var sortedImages = imagesSort(allImages);
+  for (var i = 0; i < 5; i++) {
+    renderPercentagePie(sortedImages[i]);
+  }
+
+  var barCanvas = document.createElement('canvas');
+  barCanvas.width = '500';
+  barCanvas.height = '300';
+  barCanvas.id = 'all-data-chart';
+
+  appBox.appendChild(barCanvas);
+  var ctx = barCanvas.getContext('2d');
+
   var imageLabels = [];
   var imageDataClick = [];
   var imageDataShow = [];
@@ -188,10 +196,53 @@ function renderStatistics() {
       }
     ],
   };
-  Chart.defaults.global.defaultFontColor = '#fff';
   new Chart(ctx, {
     type: 'horizontalBar',
     data: data,
+  });
+}
+
+/**
+generates a pie chart for the given image to show percentage of clicks
+**/
+function renderPercentagePie(image) {
+  var pieBox = document.createElement('div');
+  pieBox.className = 'percentage-pie';
+
+  var pieCanvas = document.createElement('canvas');
+  pieCanvas.width = '300';
+  pieCanvas.height = '300';
+
+  pieBox.appendChild(pieCanvas);
+  appBox.appendChild(pieBox);
+  var ctx = pieCanvas.getContext('2d');
+
+  var pieData = {
+    labels: ['Times Clicked', 'Times Not Clicked'],
+    datasets: [
+      {
+        // label: 'Stuff',
+        backgroundColor: ['#fff', 'transparent'],
+        borderWidth: 0,
+        data: [image.timesClick, image.timesShow - image.timesClick],
+      },
+    ],
+  };
+  new Chart(ctx, {
+    type: 'doughnut',
+    data: pieData,
+    options: {
+      legend: {
+        display: false,
+      },
+      title: {
+        display: true,
+        position: 'bottom',
+        text: image.imageTitle,
+        fontSize: 20,
+        fontStyle: 'normal',
+      },
+    }
   });
 }
 
