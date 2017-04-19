@@ -5,6 +5,18 @@
   box-sizing: border-box;
 }
 
+html, body {
+  height: 100%;
+}
+
+#app {
+  /*width: 80%;*/
+}
+
 img {
   width: 200px;
+}
+
+canvas {
+  /*width: auto;*/
 }

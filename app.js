@@ -122,7 +122,7 @@ function handleImageClick(e) {
   } else {
     console.log('DONE!');
     removeAllListeners();
-    appBox.appendChild(renderStatistics());
+    renderStatistics();
   }
   currentRound++;
 }
@@ -138,17 +138,43 @@ function removeAllListeners() {
 }
 
 /**
-renders the times clicked for every image in a list
+renders the times clicked for every image in a chart printed in a canvas element and printed to the page
 **/
 function renderStatistics() {
-  var statsList = document.createElement('ul');
-  var imageStats;
+  var canvas = document.createElement('canvas');
+  // canvas.width = '500';
+  // canvas.height = '100';
+  canvas.style['border'] = '1px blue solid';
+  appBox.appendChild(canvas);
+  var ctx = canvas.getContext('2d');
+
+  var imageLabels = [];
+  var imageDataClick = [];
+  var imageDataShow = [];
   for (var i = 0; i < allImages.length; i++) {
-    imageStats = document.createElement('li');
-    imageStats.textContent = allImages[i].timesClick + ' votes for the ' + allImages[i].imageTitle;
-    statsList.appendChild(imageStats);
+    imageLabels.push(allImages[i].imageTitle);
+    imageDataClick.push(allImages[i].timesClick);
+    imageDataShow.push(allImages[i].timesShow);
   }
-  return statsList;
+  var data = {
+    labels: imageLabels,
+    datasets: [
+      {
+        label: 'Times Clicked',
+        backgroundColor: '#3cd859',
+        data: imageDataClick,
+      },
+      {
+        label: 'Times Shown',
+        backgroundColor: '#f7d61b',
+        data: imageDataShow,
+      }
+    ],
+  };
+  var imageStats = new Chart(ctx, {
+    type: 'bar',
+    data: data,
+  });
 }
 
 /**
