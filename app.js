@@ -155,6 +155,12 @@ function handleImageClick(e) {
   } else {
     removeAllListeners();
     renderAllStatistics();
+    var link = document.createElement('a');
+    link.href = 'report.html';
+    var button = document.createElement('button');
+    button.textContent = 'View as Table';
+    link.appendChild(button);
+    appBox.appendChild(link);
   }
   try {
     localStorage.allImages = JSON.stringify(allImages);
