@@ -26,6 +26,7 @@ html, body {
   border-radius: 7px;
   margin: 10px;
   vertical-align: middle;
+  padding: 5px;
 }
 
 h1, h2 {
@@ -43,7 +44,7 @@ h2 {
 
 img {
   width: 200px;
-  margin: 10px;
+  margin: 5px;
 }
 
 canvas {

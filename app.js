@@ -2,47 +2,55 @@
 
 // CREATE AN ARRAY OF ALL THE POSSIBLE IMAGES
 var allImages = [];
-// 0
-new FocusImage('R2D2 bag', 'img/bag.jpg');
-// 1
-new FocusImage('banana slicer', 'img/banana.jpg');
-// 2
-new FocusImage('bathroom tablet holder', 'img/bathroom.jpg');
-// 3
-new FocusImage('toeless boots', 'img/boots.jpg', '3');
-// 4
-new FocusImage('all-in-one breakfast machine', 'img/breakfast.jpg');
-// 5
-new FocusImage('meatball bubblegum', 'img/bubblegum.jpg');
-// 6
-new FocusImage('inverted chair', 'img/chair.jpg');
-// 7
-new FocusImage('chthlhu action figure', 'img/cthulhu.jpg');
-// 8
-new FocusImage('dog duck beak', 'img/dog-duck.jpg');
-// 9
-new FocusImage('dragon meat', 'img/dragon.jpg');
-// 10
-new FocusImage('utensil pen caps', 'img/pen.jpg');
-// 11
-new FocusImage('pet footie sweepers', 'img/pet-sweep.jpg');
-// 12
-new FocusImage('pizza scissors', 'img/scissors.jpg');
-// 13
-new FocusImage('shark sleeping bag', 'img/shark.jpg');
-// 14
-new FocusImage('baby onesie sweeper', 'img/sweep.png');
-// 15
-new FocusImage('tauntaun sleeping bag', 'img/tauntaun.jpg');
-// 16
-new FocusImage('unicorn meat', 'img/unicorn.jpg');
-// 17
-new FocusImage('tentacle usb', 'img/usb.gif');
-// 18
-new FocusImage('self-watering can', 'img/water-can.jpg');
-// 19
-new FocusImage('closed-top wine glass', 'img/wine-glass.jpg');
 
+try {
+
+  allImages = JSON.parse(localStorage.allImages);
+
+} catch(error) {
+
+  // 0
+  new FocusImage('R2D2 bag', 'img/bag.jpg');
+  // 1
+  new FocusImage('banana slicer', 'img/banana.jpg');
+  // 2
+  new FocusImage('bathroom tablet holder', 'img/bathroom.jpg');
+  // 3
+  new FocusImage('toeless boots', 'img/boots.jpg', '3');
+  // 4
+  new FocusImage('all-in-one breakfast machine', 'img/breakfast.jpg');
+  // 5
+  new FocusImage('meatball bubblegum', 'img/bubblegum.jpg');
+  // 6
+  new FocusImage('inverted chair', 'img/chair.jpg');
+  // 7
+  new FocusImage('chthlhu action figure', 'img/cthulhu.jpg');
+  // 8
+  new FocusImage('dog duck beak', 'img/dog-duck.jpg');
+  // 9
+  new FocusImage('dragon meat', 'img/dragon.jpg');
+  // 10
+  new FocusImage('utensil pen caps', 'img/pen.jpg');
+  // 11
+  new FocusImage('pet footie sweepers', 'img/pet-sweep.jpg');
+  // 12
+  new FocusImage('pizza scissors', 'img/scissors.jpg');
+  // 13
+  new FocusImage('shark sleeping bag', 'img/shark.jpg');
+  // 14
+  new FocusImage('baby onesie sweeper', 'img/sweep.png');
+  // 15
+  new FocusImage('tauntaun sleeping bag', 'img/tauntaun.jpg');
+  // 16
+  new FocusImage('unicorn meat', 'img/unicorn.jpg');
+  // 17
+  new FocusImage('tentacle usb', 'img/usb.gif');
+  // 18
+  new FocusImage('self-watering can', 'img/water-can.jpg');
+  // 19
+  new FocusImage('closed-top wine glass', 'img/wine-glass.jpg');
+
+}
 
 var remainingImages = allImages.slice(); // copy to leave original alone
 
@@ -63,16 +71,17 @@ function FocusImage(imageTitle, imagePath) {
   this.timesShow = 0;
   allImages.push(this);
 }
+
 /**
 gets the percentage of times an image was clicked as a decimal. -1 if image was never shown
 **/
-FocusImage.prototype.getClickPercentage = function() {
-  if (this.timesShow) {
-    return this.timesClick/this.timesShow;
+function getClickPercentage(image) {
+  if (image.timesShow) {
+    return image.timesClick/image.timesShow;
   } else {
     return -1;
   }
-};
+}
 
 /**
 chooses a random index from an array
@@ -146,6 +155,11 @@ function handleImageClick(e) {
   } else {
     removeAllListeners();
     renderAllStatistics();
+  }
+  try {
+    localStorage.allImages = JSON.stringify(allImages);
+  } catch(error) {
+    console.log('Something went wrong:', error);
   }
   currentRound++;
 }
@@ -240,13 +254,12 @@ function renderPercentagePie(image) {
   appBox.appendChild(pieBox);
   var ctx = pieCanvas.getContext('2d');
 
-  var clickPercent = (image.getClickPercentage() * 100).toFixed(2);
+  var clickPercent = (getClickPercentage(image) * 100).toFixed(2);
 
   var pieData = {
     labels: ['Clicked %', 'Not Clicked %'],
     datasets: [
       {
-        // label: 'Stuff',
         backgroundColor: ['#fff', 'transparent'],
         borderWidth: 0,
         data: [clickPercent, 100 - clickPercent],
@@ -272,7 +285,7 @@ function renderPercentagePie(image) {
 }
 
 /**
-sorts the image array in decending order of percentage of times clicked
+sorts the image array in decending order of percentage of times clicked (select sort)
 **/
 function sortImages(imageList) {
   var sortedImages = imageList.slice();
@@ -280,7 +293,7 @@ function sortImages(imageList) {
   var j;
   for (var i = 1; i < sortedImages.length; i++) {
     j = i;
-    while (j > 0 && sortedImages[j - 1].getClickPercentage() < sortedImages[j].getClickPercentage()) {
+    while (j > 0 && getClickPercentage(sortedImages[j - 1]) < getClickPercentage(sortedImages[j])) {
       currentImage = sortedImages.splice(j, 1);
       sortedImages.splice(j - 1, 0, currentImage[0]);
       j--;
