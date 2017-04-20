@@ -7,22 +7,21 @@ var allImages = [];
 try {
   allImages = JSON.parse(localStorage.allImages);
 } catch(error) {
-  console.log(error);
+  console.log('no data to retrieve.');
 }
 
+var appBox = document.getElementById('app');
 var table = document.getElementById('report-table');
 
 if (allImages.length === 0) {
   var warning = document.createElement('h2');
   warning.textContent = 'There is no data to display...';
-  table.appendChild(warning);
+  appBox.appendChild(warning);
 } else {
   for (var i = 0; i < allImages.length; i++) {
     table.appendChild(renderImageDataRow(allImages[i]));
   }
 }
-
-var appBox = document.getElementById('app');
 
 var link = document.createElement('a');
 link.href = 'index.html';
@@ -74,12 +73,9 @@ function renderImageDataRow(image) {
     dataCell.textContent = '---';
   } else if (percentage < recommendPercent) {
     dataCell.textContent = 'NO';
-    dataCell.style.color = '#c90202';
-    nameCell.style.color = '#c90202';
+    dataRow.style.backgroundColor = '#a50000';
   } else {
     dataCell.textContent = 'YES';
-    dataCell.style.color = '#2EE600';
-    nameCell.style.color = '#2EE600';
   }
   dataRow.appendChild(dataCell);
 

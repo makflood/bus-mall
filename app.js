@@ -126,7 +126,6 @@ function attachImageBoxes() {
 sticks the chosen images in a div to print. adds event listeners to each.
 **/
 function renderImages(chosenImages) {
-  var imageBox = document.getElementById('app-images');
   var imageElements = document.querySelectorAll('#app-images img');
   var image;
   var printImage;
@@ -137,9 +136,7 @@ function renderImages(chosenImages) {
     image.id = printImage.imageIndex;
     image.alt = printImage.imageTitle;
     printImage.timesShow++; //increment times shown
-    imageBox.appendChild(image);
   }
-  return imageBox;
 }
 
 /**
@@ -151,16 +148,11 @@ function handleImageClick(e) {
   imageObj.timesClick++;
   if (currentRound < maxRound) {
     previousImages = getRandomImages(remainingImages, previousImages);
-    appBox.appendChild(renderImages(previousImages));
+    renderImages(previousImages);
   } else {
     removeAllListeners();
     renderAllStatistics();
-    var link = document.createElement('a');
-    link.href = 'report.html';
-    var button = document.createElement('button');
-    button.textContent = 'View as Table';
-    link.appendChild(button);
-    appBox.appendChild(link);
+    renderMiscFinalElements();
   }
   try {
     localStorage.allImages = JSON.stringify(allImages);
@@ -181,13 +173,30 @@ function removeAllListeners() {
 }
 
 /**
+edits the page to display a thanks message, grey out the images, and add a button to the bottom of the page
+**/
+function renderMiscFinalElements() {
+  document.querySelector('#app h2').textContent = 'Thank you for participating!';
+
+  var imageElements = document.querySelectorAll('#app-images img');
+  for (var i = 0; i < imageElements.length; i++) {
+    imageElements[i].style.opacity = '0.7';
+  }
+
+  var link = document.createElement('a');
+  link.href = 'report.html';
+  var button = document.createElement('button');
+  button.textContent = 'View as Table';
+  link.appendChild(button);
+  appBox.appendChild(link);
+}
+
+/**
 renders the times clicked for every image in a chart printed in a canvas element and printed to the page
 **/
 function renderAllStatistics() {
   Chart.defaults.global.defaultFontColor = '#fff';
   Chart.defaults.global.defaultFontFamily = 'Gill Sans';
-
-  document.querySelector('#app h2').textContent = 'Thank you for participating!';
 
   var heading = document.createElement('h2');
   heading.textContent = 'Top 5 Products';
@@ -317,4 +326,4 @@ MAIN APPLICATION
 appBox.appendChild(attachImageBoxes());
 
 previousImages = getRandomImages(remainingImages, previousImages);
-appBox.appendChild(renderImages(previousImages));
+renderImages(previousImages);
