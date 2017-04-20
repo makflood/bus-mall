@@ -181,6 +181,8 @@ function renderAllStatistics() {
   Chart.defaults.global.defaultFontColor = '#fff';
   Chart.defaults.global.defaultFontFamily = 'Gill Sans';
 
+  document.querySelector('#app h2').textContent = 'Thank you for participating!';
+
   var heading = document.createElement('h2');
   heading.textContent = 'Top 5 Products';
   heading.className = 'chart-heading';
@@ -261,7 +263,8 @@ function renderPercentagePie(image) {
     datasets: [
       {
         backgroundColor: ['#fff', 'transparent'],
-        borderWidth: 0,
+        borderWidth: 0.5,
+        borderColor: '#444',
         data: [clickPercent, 100 - clickPercent],
       },
     ],
@@ -285,7 +288,7 @@ function renderPercentagePie(image) {
 }
 
 /**
-sorts the image array in decending order of percentage of times clicked (select sort)
+sorts the image array in decending order of percentage of times clicked (insertion sort)
 **/
 function sortImages(imageList) {
   var sortedImages = imageList.slice();

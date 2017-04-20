@@ -48,7 +48,6 @@ img {
 }
 
 canvas {
-  border-radius: 3px;
   padding: 10px;
 }
 
@@ -57,7 +56,6 @@ canvas {
 }
 
 #all-data-chart {
-  background: #444;
 }
 
 .percentage-pie {
