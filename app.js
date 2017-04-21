@@ -119,6 +119,10 @@ function attachImageBoxes() {
     imageElement.addEventListener('click', handleImageClick);
     imageBox.appendChild(imageElement);
   }
+  var numRoundsElement = document.createElement('p');
+  numRoundsElement.id = 'round-number';
+  numRoundsElement.textContent = maxRound;
+  imageBox.appendChild(numRoundsElement);
   return imageBox;
 }
 
@@ -153,12 +157,14 @@ function handleImageClick(e) {
     removeAllListeners();
     renderAllStatistics();
     renderMiscFinalElements();
+    document.getElementById('round-number').style.transform = 'translateX(-30px)';
   }
   try {
     localStorage.allImages = JSON.stringify(allImages);
   } catch(error) {
     console.log('Something went wrong:', error);
   }
+  document.getElementById('round-number').textContent = maxRound - currentRound;
   currentRound++;
 }
 

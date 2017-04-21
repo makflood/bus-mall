@@ -57,6 +57,18 @@ tr {
   margin: 10px;
   vertical-align: middle;
   padding: 5px;
+  position: relative;
+  z-index: 20;
+}
+
+#round-number {
+  position: absolute;
+  bottom: -5px;
+  right: -650px;
+  font-size: 2.3em;
+  text-align: left;
+  font-weight: lighter;
+  transition: 500ms;
 }
 
 h1, h2 {
