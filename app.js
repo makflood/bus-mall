@@ -176,11 +176,13 @@ function removeAllListeners() {
 edits the page to display a thanks message, grey out the images, and add a button to the bottom of the page
 **/
 function renderMiscFinalElements() {
-  document.querySelector('#app h2').textContent = 'Thank you for participating!';
+  var greeting = document.querySelector('#app h2');
+  greeting.textContent = 'Thank you for participating!';
 
   var imageElements = document.querySelectorAll('#app-images img');
   for (var i = 0; i < imageElements.length; i++) {
     imageElements[i].style.opacity = '0.7';
+    imageElements[i].style.transition = '500ms';
   }
 
   var link = document.createElement('a');
@@ -202,6 +204,7 @@ function renderAllStatistics() {
   heading.textContent = 'Top 5 Products';
   heading.className = 'chart-heading';
   appBox.appendChild(heading);
+
 
   var sortedImages = sortImages(allImages);
   for (var pie = 0; pie < 5; pie++) {
